@@ -1,43 +1,112 @@
-import { View, Text,Image,StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { View, Text,Image,StyleSheet, TouchableHighlight, TouchableOpacity, Animated } from 'react-native'
+import React, { useEffect, useRef } from 'react'
 import {FONTS,COLORS,SIZES} from '../constants'
 import ntf08 from '../assets/images/nft08.jpg'
 import ntf06 from '../assets/images/nft06.jpg'
 import ntf04 from '../assets/images/nft04.jpg'
-import { Colors } from 'react-native/Libraries/NewAppScreen'
+
 import Button from '../components/Button'
 import { useNavigation } from '@react-navigation/native'
 
 const Welcome = () => {
+  const duration = 1000;
+  const delay =duration +500;
+  const anim_fada = useRef(new Animated.Value(0)).current;
+  const anim_move = useRef(new Animated.ValueXY({x:100,y:100})).current;
+  const anim_text = useRef(new Animated.Value(0)).current;
+  const anim_buttom = useRef(new Animated.Value(1)).current;
+
+  const handleButtom = ()=>{
+    Animated.spring(anim_buttom,{
+      toValue:0,
+      duration,
+      delay,
+      useNativeDriver:true,
+      friction:4
+    }
+    ).start();
+  }
+
+  const handleText = ()=>{
+    Animated.timing(anim_text,{
+    
+      toValue:1,
+      duration,
+      
+      delay,
+      useNativeDriver:true
+    }
+    ).start();
+  }
 
   const navigation = useNavigation();
   const handlerStart = ()=>{
     navigation.navigate('Home')
   }
+
+
+
+  const handleAnimed =()=>{
+     Animated.sequence([
+    Animated.timing(anim_fada,{
+      toValue:1,
+      duration,
+      useNativeDriver:true
+    })
+   ,
+    Animated.spring(anim_move,{
+      toValue: {x:0,y:0},
+      duration,
+      useNativeDriver:true
+    }),
+  ]).start();
+  };
+
+useEffect(()=>{
+  handleAnimed();
+  handleText();
+  handleButtom();
+},[handleAnimed,handleText,handleButtom]);
+
+ 
   return (
     <View style={styles.container}>
-      <View style={styles.imageContainer}>
+      <Animated.View style={[styles.imageContainer,{
+        opacity:anim_fada,
+        transform:anim_move.getTranslateTransform(),
+      },
+      ]}
+      >
         <View style={styles.imageCard}>
-        <Image style={styles.image}source={ntf04}></Image>
+          <Image style={styles.image}source={ntf04}></Image>
         </View>
         <View style={[styles.imageCard,{top:SIZES.xLarge}]}>
           <Image style={styles.image}source={ntf06}></Image>
         </View>
         <View style={styles.imageCard}>
-        <Image style={styles.image}source={ntf08}></Image>
+          <Image style={styles.image}source={ntf08}></Image>
         </View>
-      </View>
-      <View style={styles.textContainer}>
+      </Animated.View>
+      <Animated.View style={[styles.textContainer,{
+        opacity:anim_text,
+      }]}>
         <Text style={styles.mainText}>Find, Collect and Sell Amazing NFTs</Text>
         <Text style={styles.subText}>expore the top collectio of ntfs and buy ans sell your NFTs as well</Text>
-      </View>
-      <View style={styles.buttonContainer}>
+      </Animated.View>
+      <Animated.View style={[styles.buttonContainer,{
+        transform:[{
+          translateY:anim_buttom.interpolate({
+            inputRange:[0,1],
+            outputRange:[0,200]
+          }),
+        }]
+      }]}>
         <Button styleButton={styles.button}
         title={'Start'}
         styleText={styles.mainText}
         preeHandler={handlerStart}
         ></Button>
-      </View>
+      </Animated.View>
     </View>
   )
 }
