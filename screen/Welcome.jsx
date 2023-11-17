@@ -97,7 +97,7 @@ useEffect(()=>{
         transform:[{
           translateY:anim_buttom.interpolate({
             inputRange:[0,1],
-            outputRange:[0,200]
+            outputRange:[0,150]
           }),
         }]
       }]}>
