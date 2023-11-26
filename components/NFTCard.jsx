@@ -30,12 +30,14 @@ const styles = StyleSheet.create({
       marginBottom:SIZES.xLarge,
       marginVertical:SIZES.small-5,
       marginHorizontal:14,
+      flex:1,
+      justifyContent:'center',
       padding:12
       },
       cardTop:{
         width:"100%",
         paddingHorizontal:SIZES.medium,
-        marginTop:-30,
+        marginTop:20,
         flexDirection:"row",
         justifyContent:"space-between"
       },
